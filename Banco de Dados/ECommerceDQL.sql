@@ -24,6 +24,8 @@ JOIN
 	clinica.medico AS med
 ON cs.id_medico =
 med.id_medico
+WHERE cs.valor > 100
+-- WHERE - Filtro
 
 
 SELECT pedido_id, nome_completo
@@ -31,6 +33,11 @@ FROM techmarket.pedido
 JOIN techmarket.cliente
 ON techmarket.pedido.cliente_id = 
 techmarket.cliente.cliente_id
+
+
+SELECT COUNT(id_medico)
+FROM clinica.medico;
+
 
 
 
