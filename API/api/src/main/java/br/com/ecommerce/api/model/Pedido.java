@@ -26,7 +26,7 @@ public class Pedido {
     @Column(name = "status", nullable = false, length = Integer.MAX_VALUE)
     private String status;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
