@@ -35,7 +35,7 @@ public class Veiculo {
     // Efeito: Se o 'usuario' (entregador) for deletado, todos os seus 'veiculos' associados
     // serão removidos em cascata diretamente no banco de dados.
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "entregador_id", nullable = false)
     private Usuario entregador;
 }

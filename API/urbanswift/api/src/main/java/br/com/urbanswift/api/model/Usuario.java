@@ -37,7 +37,7 @@ public class Usuario {
      * Isso impede que um 'tipos_usuario' (ex: "Cliente") seja deletado se houver qualquer
      * 'usuario' associado a ele, garantindo a integridade do sistema.
      */
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "tipo_usuario_id", nullable = false)
     private TipoUsuario tipoUsuario;
 

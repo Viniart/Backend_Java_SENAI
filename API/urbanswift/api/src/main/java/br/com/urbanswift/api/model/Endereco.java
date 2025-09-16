@@ -32,7 +32,7 @@ public class Endereco {
     private String cep;
 
     // JPA: Define um relacionamento MUITOS-PARA-UM. Muitos endereços podem pertencer a um cliente (Usuário).
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     // JPA: Especifica a coluna da chave estrangeira ('cliente_id') nesta tabela, que referencia a PK da tabela 'usuarios'.
     @JoinColumn(name = "cliente_id",
             nullable = false,

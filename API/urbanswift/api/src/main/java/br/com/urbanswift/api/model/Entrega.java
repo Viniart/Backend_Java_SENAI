@@ -35,7 +35,7 @@ public class Entrega {
     // Efeito: Se o 'usuario' (cliente) for deletado, todos os registros de 'entregas'
     // feitos por ele serão também deletados.
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "cliente_id", nullable = false)
     private Usuario cliente;
 
@@ -43,7 +43,7 @@ public class Entrega {
     // Efeito: Se um 'endereco' for deletado (o que já aconteceria em cascata se o cliente fosse deletado),
     // qualquer registro de 'entregas' apontando para ele também será deletado.
     @OnDelete(action = OnDeleteAction.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "endereco_id", nullable = false)
     private Endereco endereco;
 }
