@@ -5,6 +5,7 @@ import br.com.urbanswift.api.model.Usuario;
 import br.com.urbanswift.api.repository.TipoUsuarioRepository;
 import br.com.urbanswift.api.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,9 +16,14 @@ public class UsuarioService {
 
     private final TipoUsuarioRepository tipoUsuarioRepository;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, TipoUsuarioRepository tipoUsuarioRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    public UsuarioService(UsuarioRepository usuarioRepository,
+                          TipoUsuarioRepository tipoUsuarioRepository,
+                          PasswordEncoder passwordEncoder) {
         this.usuarioRepository = usuarioRepository;
         this.tipoUsuarioRepository = tipoUsuarioRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public List<Usuario> listarTodos() {
@@ -29,6 +35,9 @@ public class UsuarioService {
     }
 
     public Usuario cadastrar(Usuario u) {
+        String senhaCriptografada = passwordEncoder.encode(u.getSenha());
+
+        u.setSenha(senhaCriptografada);
         return usuarioRepository.save(u);
     }
 
@@ -40,7 +49,8 @@ public class UsuarioService {
         }
 
         uExistente.setEmail(uNovo.getEmail());
-        uExistente.setSenha(uNovo.getSenha());
+        String senhaCriptografada = passwordEncoder.encode(uNovo.getSenha());
+        uExistente.setSenha(senhaCriptografada);
         uExistente.setNomeCompleto(uNovo.getNomeCompleto());
 
         if (uNovo.getTipoUsuario() != null && uNovo.getTipoUsuario().getTipoUsuarioId() != null) {
