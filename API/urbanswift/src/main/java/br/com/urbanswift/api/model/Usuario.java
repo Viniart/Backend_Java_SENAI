@@ -6,6 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -14,7 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class Usuario implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,31 +35,42 @@ public class Usuario {
     @Column(name = "senha", nullable = false)
     private String senha;
 
-    /*
-     * Nota sobre ON DELETE para este relacionamento:
-     * Propositalmente, NÃO adicionamos @OnDelete(action = OnDeleteAction.CASCADE) aqui.
-     * O comportamento padrão do banco de dados (RESTRICT/NO ACTION) é o desejado.
-     * Isso impede que um 'tipos_usuario' (ex: "Cliente") seja deletado se houver qualquer
-     * 'usuario' associado a ele, garantindo a integridade do sistema.
-     */
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     @JoinColumn(name = "tipo_usuario_id", nullable = false)
     private TipoUsuario tipoUsuario;
 
-    /*
-     * =====================================================================================
-     * EXEMPLO DE MAPEAMENTO BIDIRECIONAL (O LADO "UM") - MANTIDO COMENTADO
-     * =====================================================================================
-     * Para habilitar a navegação de Usuario para suas entidades filhas (ex: usuario.getEnderecos()),
-     * você pode descomentar os blocos abaixo. Isso caracteriza uma relação bidirecional.
-     *
-     * @OneToMany: Define a relação de "um-para-muitos". Um Usuário para muitos Endereços.
-     * mappedBy = "cliente": ESSENCIAL. Informa ao JPA que a relação já está mapeada
-     * pelo campo "cliente" na entidade Endereco. Isso evita a criação de uma tabela de junção.
-     * O lado com "mappedBy" é sempre o inverso, o que não possui a chave estrangeira.
-     * cascade = CascadeType.ALL: Propaga operações (salvar, deletar) do Usuário para seus Endereços.
-     * orphanRemoval = true: Remove do banco um Endereço que foi desassociado desta lista de Usuário.
-     */
-    // @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    // private List<Endereco> enderecos;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(this.getTipoUsuario().getDescricao()));
+    }
+
+    @Override
+    public String getPassword() {
+        return this.senha;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -1,8 +1,7 @@
 package br.com.urbanswift.api.controller;
 
-import br.com.urbanswift.api.dto.JwtAuthenticationResponse;
+import br.com.urbanswift.api.config.JwtUtil;
 import br.com.urbanswift.api.dto.LoginRequest;
-import br.com.urbanswift.api.security.JwtTokenProvider;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,25 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class LoginController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtUtil jwtUtil;
 
-    public LoginController(AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider) {
+    public LoginController(AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/")
-    public ResponseEntity<?> authenticate(@RequestBody LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        loginRequest.getEmail(),
-                        loginRequest.getSenha()
-                )
-        );
+    @PostMapping()
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        var authToken = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getSenha());
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        authenticationManager.authenticate(authToken);
 
-        String jwt = jwtTokenProvider.generateToken(authentication);
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
+        return ResponseEntity.ok(jwtUtil.generateToken(loginRequest.getEmail()));
     }
 }
