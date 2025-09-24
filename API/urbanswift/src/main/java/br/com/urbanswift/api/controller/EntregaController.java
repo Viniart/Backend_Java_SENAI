@@ -5,6 +5,7 @@ import br.com.urbanswift.api.service.EntregaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/entregas")
 @Tag(name = "Entregas", description = "Endpoints para gerenciamento de entregas")
+@SecurityRequirement(name = "bearerAuth")
 public class EntregaController {
 
     private final EntregaService entregaService;
